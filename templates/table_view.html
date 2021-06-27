@@ -2,17 +2,17 @@
 	<thead class="table-dark">
 		<tr>
 			<th scope="col">Code</th>
+			<th scope="col">Priority</th>
 			<th scope="col">LowerLimit</th>
 			<th scope="col">UpperLimit</th>
-			<th scope="col">Priority</th>
 		</tr>
 	</thead>
 	<tbody> 
 		{% for entry in all %}
 		<tr>
 			<td>{{entry.code}}</td>
-			<td>{{entry.lower_limit}}</td>
-			<td>{{entry.upper_limit}}</td>
 			<td>{{entry.priority}}</td>
+			<td>{{entry.lower_limit}}</td>
+			<td>{{entry.upper_limit}}</td>		
 		</tr> {% endfor %} </tbody>
 </table>
