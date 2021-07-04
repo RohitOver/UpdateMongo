@@ -84,12 +84,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         # 'NAME': 'testdb',
+        
         'ENFORCE_SCHEMA': False,
         'NAME' : 'sheru',
         'HOST' : 'mongodb+srv://sheru42:EVyfkhMQZB2WVwMj@cluster0.9vgqn.mongodb.net/sheru?retryWrites=true&w=majority&connect=false',
         'PORT' : 27017,
         'USER' : 'sheru42',       
         'PASSWORD' : 'EVyfkhMQZB2WVwMj',
+
         # 'CLIENT' : {
         #     'host' : 'mongodb+srv://sheru42:EVyfkhMQZB2WVwMj@cluster0.9vgqn.mongodb.net/sheru?retryWrites=true&w=majority&connect=false',
         #     'username' : 'sheru42',       

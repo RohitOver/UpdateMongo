@@ -15,7 +15,7 @@ def index(request):
 	elif request.method == "GET" and request.is_ajax():
 		context = {}
 		context['all'] = Battery.objects.all()
-		return render(request,'table_view.html',context)
+		return render(request,'index.html',context)
 	else:
 		print("Refreshing ...")
 		context = {}

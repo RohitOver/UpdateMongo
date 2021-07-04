@@ -17,20 +17,39 @@
 	<table class="table table-hover table-bordered" id="table1" style="width: 80% ;margin-left: auto;margin-right: auto; text-align: center">
 		<thead class="table-dark">
 			<tr>
+				<th></th>
 				<th scope="col">Code</th>
 				<th scope="col">Priority</th>
 				<th scope="col">LowerLimit</th>
 				<th scope="col">UpperLimit</th>				
 			</tr>
 		</thead>
-		<tbody> 
-			{% for entry in all %}
-			<tr>
-				<td>{{entry.code}}</td>
-				<td>{{entry.priority}}</td>
-				<td>{{entry.lower_limit}}</td>
-				<td>{{entry.upper_limit}}</td>
-			</tr> {% endfor %} </tbody>
+		<tbody>
+			{% regroup all|dictsort:'code' by code as code_list %}
+			{% for code,entries in code_list %}
+			<tr id="{{code}}">
+				<td class="table-plus-{{code}}"><b>+</b></td>
+				<td class="table-minus-{{code}}" style="display:none;"><b>-</b></td>
+				<td>{{entries.0.code}}</td>
+				<td>{{entries.0.priority}}</td>
+				<td>{{entries.0.lower_limit}}</td>
+				<td>{{entries.0.upper_limit}}</td>
+			</tr>
+			<tbody id="{{code}}_rows" style="display:none;">
+				{% for entry in entries %}
+				{% if forloop.counter != 1 %}
+				<tr>
+					<td></td>
+					<td>{{entry.code}}</td>
+					<td>{{entry.priority}}</td>
+					<td>{{entry.lower_limit}}</td>
+					<td>{{entry.upper_limit}}</td>
+				</tr>
+				{% endif %}
+				{% endfor %}
+			</tbody>
+			{% endfor %}
+		</tbody>
 	</table>
 	<div class="container" style="padding: 0% 7% 0% 7% ; margin-bottom: 1rem">
 		<form name="form" id="form1"> {% csrf_token %}
@@ -39,7 +58,7 @@
 				<br>
 				<!-- <input type="text" class="form-control" id="code" name = "code"> -->
 				<select id="code" name="code" required>
-					{% regroup all by code as code_list %}
+					{% regroup all|dictsort:'code' by code as code_list %}
 					<option disabled selected value>-- &nbsp &nbsp Choose code &nbsp &nbsp--</option> 
 					{% for code,entry in code_list %}
 					<option value={{code}}>{{code}}</option> {% endfor %} 
@@ -49,7 +68,7 @@
 				<label class="form-label">Enter priority</label>
 				<br>
 				<select id="priority" name="priority" required>
-					{% regroup all by priority as priority_list %}
+					{% regroup all|dictsort:'priority' by priority as priority_list %}
 					<option disabled selected value>-- &nbsp Choose priority &nbsp--</option> 
 					{% for priority,entry in priority_list %}
 					<option value={{priority}}>{{priority}}</option> {% endfor %} 
@@ -117,8 +136,18 @@
 						$('#form1').trigger('reset');
 						if(data['changes_made'] == 1)
 						{
-							$('#successmsg').show();
-							$('#successmsg').fadeOut(2000);	
+							$.ajax(
+							{
+								url: '/',
+								success: function(data)
+								{
+									$('body').html(data);
+									console.log("Updated");
+									$('#successmsg').show();
+									$('#successmsg').fadeOut(2000);
+									
+								}
+							})
 						}
 						else
 						{
@@ -126,16 +155,6 @@
 							$('#failuremsg').fadeOut(2000);
 							console.log("Wrong values entered");
 						}
-						$.ajax(
-						{
-							url: '/',
-							success: function(data)
-							{
-								$('#table1').html(data);
-								console.log("Updated");
-								
-							}
-						});
 						// $("#updatebtn").mouseup(function(){
 						// 	// setTimeout(function()
 						// 	// {
@@ -153,7 +172,20 @@
 				})
 				return false;
 			}
+
+			
 		})
+
+		{% regroup all|dictsort:'code' by code as code_list %}
+		{% for code,entries in code_list %}
+		$('#{{code}}').click(function()
+		{
+			$('#{{code}}_rows').toggle();
+			$('.table-plus-{{code}}').toggle();
+			$('.table-minus-{{code}}').toggle();
+		})
+		{% endfor %}
+
 	})
 	</script> 
 	{% endblock javascripts %}
